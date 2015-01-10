@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+    body{
+<?js echo(['background:#333','color:#aaa'].join(';\n'));?>
+    }
+    </style>
+  </head>
+  <body>
+  <h1>pewpew</h1>
+  <?js echo('<h3>pew</h1>'); 
+    echo('<ul>'+['pew.phpjs','index.phpjs']
+      .map(function(a){
+        return '<li><a href="'+a+'">'+a+'</a></li>';
+      })
+      .join("\n")+'</ul>');
+  
+  ?><br>
+  <?js var pewpew='pewpew';echo(pewpew); ?>
