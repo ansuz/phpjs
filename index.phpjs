@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+    body{
+      <?js echo(['background:#333','color:#aaa'].join(';\n'));?>
+    }
+    </style>
+  </head>
+  <body>
+  <h1>pewpew</h1>
+
+  <?js echo('<h3>pew</h1>'); ?>
+
+  <?js echo(new Date().toISOString()); ?>
+
