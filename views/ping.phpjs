@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>phpjs pinger</title>
+<meta charset='utf-8'>
+</head>
+<body>
+
+<?js
+  echo('<p>Since the phpjs tag below set php.wait to true, all other tags will wait until its callback for this page to finish.</p>');
+?>
+
+<?js
+  php.wait=true;
+  var exec=require("child_process").exec;
+
+  exec('ping -c 3 '+req.connection.remoteAddress,function(e,out,err){
+    if(e)console.log(err);
+    php.response[id]='<pre>'+out+'</pre>';
+    php.end();
+  });
+?>
