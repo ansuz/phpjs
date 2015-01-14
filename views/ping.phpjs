@@ -7,16 +7,32 @@
 <body>
 
 <?js
+  // phpjs provides each tag with an 'echo' function
+  // it logs to the console, appends the text to the tags output, and returns it
   echo('<p>Since the phpjs tag below set php.wait to true, all other tags will wait until its callback for this page to finish.</p>');
 ?>
 
 <?js
+  // for asynchronous functions, use php.wait=true
+  // this affects the behaviour of the whole page.
+  // if you are using multiple asynchronous functions...
+  // you must handle race conditions yourself.
   php.wait=true;
-  var exec=require("child_process").exec;
 
+  // the require api caches, once loaded, libraries are kept in memory
+  // other variables can be made to persist across scripts as well
+  // use lazy techniques, see http://transitiontech.ca/lazy
+  var exec=require("child_process").exec; 
+
+  // exec takes a callback
   exec('ping -c 3 '+req.connection.remoteAddress,function(e,out,err){
+    // log errors, if they exist
     if(e)console.log(err);
+
+    // each js tag has access to an 'id' variable, and a response.
+    // this is basically another way of printing without using echo
     php.response[id]='<pre>'+out+'</pre>';
-    php.end();
+    // php.end swaps all your php.responses into the original body of the page
+    php.end(); 
   });
 ?>
