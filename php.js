@@ -1,6 +1,7 @@
 var http=require("http");
 var fs=require("fs");
 var $=require("ansuz");
+var marked=require("marked");
 var php={};
 
 var readAndDo=php.readAndDo=function(path,f){
@@ -19,6 +20,12 @@ var main=php.main=function(opt){
     res.end('404');
   };
   var wait=opt.wait||false;
+  var retouch=opt.retouch||function(body){
+    return body.replace(/<\?md(.|\s)*?\?>/mg,
+      function(x){
+        return marked(x.slice(4,-3));
+      })
+  };
 
   return function(req,res,next){
     var target=path+(req.url.slice(1)||def);
@@ -53,7 +60,7 @@ var main=php.main=function(opt){
             return id;  
           });
         if(!php.wait){  
-          res.end($.swap(php.body,php.response));
+          res.end(retouch($.swap(php.body,php.response)));
         }
         });
       }
