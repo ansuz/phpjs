@@ -1,6 +1,6 @@
 var http=require("http");
 var fs=require("fs");
-var $=require("ansuz");
+var ansuz=require("ansuz");
 var marked=require("marked");
 var php={};
 
@@ -19,11 +19,12 @@ var main=php.main=function(opt){
   var F404=function(req,res){
     res.end('404');
   };
+  var debug=opt.debug||false;
   var wait=opt.wait||false;
   var retouch=opt.retouch||function(body){
-    return body.replace(/<\?md(.|\s)*?\?>/mg,
+    return body.replace(/<\?md(.|\s)*?md\?>/mg,
       function(x){
-        return marked(x.slice(4,-3));
+        return marked(x.slice(4,-5));
       })
   };
 
@@ -42,16 +43,18 @@ var main=php.main=function(opt){
             }
           };
           var C=0;
-          php.body+=erm.replace(/<\?js(.|\s)*?\?>/mg,function(x){
+          php.body+=erm.replace(/<\?js(.|\s)*?js\?>/mg,function(x){
             var id=php.id='{PHPJS'+(C++)+'}';
             php.response[id]="";
             var echo=function(x){
-              php.response[id]+=(x+'\n');
-              console.log(x);
+              php.response[id]+=x;
+              if(debug)console.log(x);
               return x;
             };
             try{
-              eval(x.slice(4,-3)); // eval blocks
+              var FUNCTION_BODY=x.slice(4,-5);
+              if(debug)console.log(FUNCTION_BODY);
+              eval(FUNCTION_BODY); // eval blocks
               // its processes may not, use php.wait=true
             }catch(err){
               console.log('ERR: '+err);
@@ -60,7 +63,7 @@ var main=php.main=function(opt){
             return id;  
           });
         if(!php.wait){  
-          res.end(retouch($.swap(php.body,php.response)));
+          res.end(retouch(ansuz.swap(php.body,php.response)));
         }
         });
       }
